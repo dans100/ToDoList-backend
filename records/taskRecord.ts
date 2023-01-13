@@ -4,7 +4,7 @@ import {v4 as uuid} from 'uuid';
 import {pool} from "../utils/db";
 import {FieldPacket} from "mysql2";
 
-type ResListRecord = [TaskEntity[], FieldPacket[]]
+type ResListRecord = [TaskEntity[], FieldPacket[]];
 
 export class TaskRecord implements TaskEntity {
 
