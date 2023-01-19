@@ -27,6 +27,12 @@ login
             } else {
                 res
                     .status(401)
+                    .send('Invalid login details ')
             }
         }
     })
+    .delete('/', async(req, res) => {
+        res
+            .status(204)
+            .send('Logout');
+    });

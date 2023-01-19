@@ -1,12 +1,13 @@
 import {Router} from "express";
 import {TaskRecord} from "../records/taskRecord";
 import {ValidationError} from "../utils/error";
+import {authorization} from "./authorization";
 
 
 export const list = Router();
 
 list
-    .get('/', async (req, res) => {
+    .get('/', authorization, async (req, res) => {
         const list = await TaskRecord.listAll();
         res.json(list);
     })
