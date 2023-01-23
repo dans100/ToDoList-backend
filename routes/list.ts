@@ -1,13 +1,13 @@
 import {Router} from "express";
 import {TaskRecord} from "../records/taskRecord";
 import {ValidationError} from "../utils/error";
-import {authorization} from "./authorization";
+import {verifyToken} from "../utils/verifyToken";
 
 
 export const list = Router();
 
 list
-    .get('/', authorization, async (req, res) => {
+    .get('/', verifyToken, async (req, res) => {
         const list = await TaskRecord.listAll();
         res.json(list);
     })
@@ -19,7 +19,7 @@ list
     .delete('/:id', async(req, res) => {
         const task = await TaskRecord.getOne(req.params.id);
         if (task === null) {
-            return new ValidationError('Nie znaleziono zadania o podanym id');
+            return new ValidationError('User not found');
         }
         await task.delete();
         res.json(task);

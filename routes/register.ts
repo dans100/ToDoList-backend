@@ -15,9 +15,8 @@ register
                 email,
             });
             await newUser.insert();
-        res.send('sucess');
+            res.json({message: `User ${username} has been registered`});
         } else {
-            res.send('User of this username is already');
+            res.json({message: `User ${username} is already`});
         }
-
     })

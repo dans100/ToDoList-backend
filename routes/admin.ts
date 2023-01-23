@@ -1,9 +1,9 @@
 import {Router} from "express";
-import {authorization} from "./authorization";
+import {verifyToken} from "../utils/verifyToken";
 
 export const admin = Router();
 
 admin
-    .get('/', authorization, (req, res) => {
+    .get('/', verifyToken, (req, res) => {
         res.send('Welcome to admin page');
     });
