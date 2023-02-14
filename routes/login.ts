@@ -16,10 +16,10 @@ export const login = Router();
 
 
 login
-    .get('/', verifyToken, async (req: Request, res: Response) => {
+    .get('/login', verifyToken, async (req: Request, res: Response) => {
         res.json({message: 'User is logged'});
     })
-    .post('/', async (req, res, next) => {
+    .post('/login', async (req, res, next) => {
         const {email, password} = req.body;
         const user = await UserRecord.getOne(email);
 
@@ -46,8 +46,9 @@ login
             }
         }
     })
-    .delete('/', async (req, res) => {
+    .delete('/logout', async (req, res) => {
         res
+            .clearCookie('access_token', {path: '/'})
             .status(204)
             .json({message: 'Logout'});
     });

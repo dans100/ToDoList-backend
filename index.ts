@@ -42,7 +42,7 @@ app.use(session({
 app.use('/list', list);
 app.use('/register', register);
 app.use('/admin', admin);
-app.use('/login', login);
+app.use('/', login);
 
 
 app.listen(3001, '0.0.0.0', () => {
