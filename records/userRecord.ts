@@ -48,13 +48,6 @@ export class UserRecord {
         return this.username;
     }
 
-    public async updateRefreshToken(token:string):Promise<void>{
-        await pool.execute('UPDATE `users` SET `refreshToken`=:token WHERE `username`=:username', {
-            token,
-            username: this.username
-        });
-    }
-
     public static async getOne(email:string):Promise<UserRecord | null> {
         const [result] = await pool.execute('SELECT * FROM `users` WHERE `email`=:email', {
             email,
@@ -63,6 +56,5 @@ export class UserRecord {
         return result.length === 0 ? null : new UserRecord(result[0]);
 
     }
-
 
 }

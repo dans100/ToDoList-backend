@@ -20,7 +20,7 @@ login
         res.json({message: 'User is logged'});
     })
     .post('/', async (req, res, next) => {
-        const {username, email, password} = req.body;
+        const {email, password} = req.body;
         const user = await UserRecord.getOne(email);
 
         if (!user) {
@@ -31,16 +31,14 @@ login
             const hashedPassword = user.password;
             const isValidPassword = await bcrypt.compare(password, hashedPassword);
             if (isValidPassword) {
-                const token = jwt.sign({username, email}, process.env.ACCESS_TOKEN as string, {expiresIn: '5m'});
-                const refreshToken = jwt.sign({username, email}, process.env.ACCESS_TOKEN as string);
-                await user.updateRefreshToken(refreshToken);
-
+                const {email, username} = user;
+                const token = jwt.sign({email, username}, process.env.ACCESS_TOKEN as string, {expiresIn: '60m'})
                 res
                     .cookie("access_token", token, {
                         httpOnly: true,
                     })
                     .status(200)
-                    .json({username, email});
+                    .json({email, username, token});
             } else {
                 res
                     .status(400)

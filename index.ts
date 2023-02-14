@@ -22,7 +22,7 @@ const limiter = rateLimit({
 const app = express();
 app.use(limiter);
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://192.168.1.11:3000'],
+    origin: process.env.CORS_ORIGIN as string,
     methods: 'GET,POST,DELETE',
     credentials: true,
 }));

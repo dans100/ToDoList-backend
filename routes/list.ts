@@ -11,12 +11,12 @@ list
         const list = await TaskRecord.listAll();
         res.json(list);
     })
-    .post('/', async (req, res) => {
+    .post('/', verifyToken, async (req, res) => {
         const task = new TaskRecord(req.body);
         await task.insert();
         res.json(task);
     })
-    .delete('/:id', async(req, res) => {
+    .delete('/:id', verifyToken, async(req, res) => {
         const task = await TaskRecord.getOne(req.params.id);
         if (task === null) {
             return new ValidationError('User not found');
