@@ -1,4 +1,3 @@
-const mysql = require('mysql2/promise');
 
 export const pool = mysql.createPool({
     host: process.env.DBHOST as string,
@@ -8,3 +7,4 @@ export const pool = mysql.createPool({
     decimalNumbers: true,
     namedPlaceholders: true,
 });
+
