@@ -19,8 +19,17 @@ list
     .delete('/:id', verifyToken, async(req, res) => {
         const task = await TaskRecord.getOne(req.params.id);
         if (task === null) {
-            return new ValidationError('User not found');
+            return new ValidationError('Task not found');
         }
         await task.delete();
+        res.json(task);
+    })
+    .patch('/:id', verifyToken, async(req, res) => {
+        const task = await TaskRecord.getOne(req.params.id);
+        if (task === null) {
+            return new ValidationError('Task not found')
+        }
+        task.task = req.body.editTaskValue;
+        await task.update();
         res.json(task);
     });

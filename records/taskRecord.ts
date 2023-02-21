@@ -38,6 +38,13 @@ export class TaskRecord implements TaskEntity {
         });
     }
 
+    public async update():Promise<void> {
+        await pool.execute('UPDATE `list` SET `task`=:task WHERE `id`=:id', {
+            id: this.id,
+            task: this.task,
+        })
+    }
+
     public static async getOne(id: string): Promise<TaskRecord | null> {
         const [result] = await pool.execute('SELECT * FROM `list` WHERE `id`=:id', {
             id,
