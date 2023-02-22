@@ -23,7 +23,7 @@ const app = express();
 app.use(limiter);
 app.use(cors({
     origin: process.env.CORS_ORIGIN as string,
-    methods: 'GET,POST,DELETE',
+    methods: 'GET,POST,DELETE,PATCH',
     credentials: true,
 }));
 app.use(express.json());

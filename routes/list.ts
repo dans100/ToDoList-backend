@@ -7,8 +7,8 @@ import {verifyToken} from "../utils/verifyToken";
 export const list = Router();
 
 list
-    .get('/', verifyToken, async (req, res) => {
-        const list = await TaskRecord.listAll();
+    .get('/:name?', verifyToken, async (req, res) => {
+        const list = await TaskRecord.listAll(req.params.name ?? '');
         res.json(list);
     })
     .post('/', verifyToken, async (req, res) => {
@@ -16,11 +16,28 @@ list
         await task.insert();
         res.json(task);
     })
-    .delete('/:id', verifyToken, async(req, res) => {
+    .delete('/:id?', verifyToken, async(req, res) => {
+        if (req.params.id) {
+            const task = await TaskRecord.getOne(req.params.id);
+            if (task === null) {
+                return new ValidationError('Task not found');
+            }
+            await task.delete();
+            res.json(task);
+        } else {
+            await TaskRecord.deleteAll();
+            res.end();
+        }
+    })
+    .patch('/:id', verifyToken, async(req, res) => {
         const task = await TaskRecord.getOne(req.params.id);
         if (task === null) {
-            return new ValidationError('User not found');
+            return new ValidationError('Task not found')
         }
-        await task.delete();
+        if (req.body.editTaskValue.length <3 || req.body.editTaskValue.length > 55) {
+            return new ValidationError('Task cannot be more than 3 characters and later than 55 characters');
+        }
+        task.task = req.body.editTaskValue;
+        await task.update();
         res.json(task);
     });

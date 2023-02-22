@@ -13,8 +13,8 @@ export class TaskRecord implements TaskEntity {
 
     constructor(public obj: TaskEntity) {
 
-        if (!obj.task || obj.task.length < 3 || obj.task.length > 250) {
-            throw new ValidationError('Liczba znaków musi być większa od 3 i mniejsza od 250');
+        if (!obj.task || obj.task.length < 3 || obj.task.length > 55) {
+            throw new ValidationError('Task cannot be more than 3 characters and later than 55 characters');
         }
 
         this.id = obj.id;
@@ -38,6 +38,13 @@ export class TaskRecord implements TaskEntity {
         });
     }
 
+    public async update():Promise<void> {
+        await pool.execute('UPDATE `list` SET `task`=:task WHERE `id`=:id', {
+            id: this.id,
+            task: this.task,
+        })
+    }
+
     public static async getOne(id: string): Promise<TaskRecord | null> {
         const [result] = await pool.execute('SELECT * FROM `list` WHERE `id`=:id', {
             id,
@@ -45,10 +52,16 @@ export class TaskRecord implements TaskEntity {
         return result.length === 0 ? null : new TaskRecord(result[0]);
     }
 
-    public static async listAll(): Promise<TaskEntity[]> {
-        const [result] = await pool.execute('SELECT * FROM `list`') as ResListRecord;
+    public static async listAll(name: string): Promise<TaskEntity[]> {
+        const [result] = await pool.execute('SELECT * FROM `list` WHERE `task` LIKE :search', {
+            search: `%${name}%`
+        }) as ResListRecord;
         // return result.map(obj => new TaskRecord(obj));
         return result;
+    }
+
+    public static async deleteAll(): Promise<void> {
+        await pool.execute('DELETE FROM `list`');
     }
 
 }
