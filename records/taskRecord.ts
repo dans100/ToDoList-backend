@@ -13,8 +13,8 @@ export class TaskRecord implements TaskEntity {
 
     constructor(public obj: TaskEntity) {
 
-        if (!obj.task || obj.task.length < 3 || obj.task.length > 250) {
-            throw new ValidationError('Liczba znaków musi być większa od 3 i mniejsza od 250');
+        if (!obj.task || obj.task.length < 3 || obj.task.length > 55) {
+            throw new ValidationError('Task cannot be more than 3 characters and later than 55 characters');
         }
 
         this.id = obj.id;
@@ -58,6 +58,10 @@ export class TaskRecord implements TaskEntity {
         }) as ResListRecord;
         // return result.map(obj => new TaskRecord(obj));
         return result;
+    }
+
+    public static async deleteAll(): Promise<void> {
+        await pool.execute('DELETE FROM `list`');
     }
 
 }
