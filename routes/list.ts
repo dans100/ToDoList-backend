@@ -8,7 +8,7 @@ export const list = Router();
 
 list
     .get('/', verifyToken, async (req, res) => {
-        const list = await TaskRecord.listAll();
+        const list = await TaskRecord.listAll(req.params.name ?? '');
         res.json(list);
     })
     .post('/', verifyToken, async (req, res) => {

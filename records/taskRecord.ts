@@ -52,8 +52,10 @@ export class TaskRecord implements TaskEntity {
         return result.length === 0 ? null : new TaskRecord(result[0]);
     }
 
-    public static async listAll(): Promise<TaskEntity[]> {
-        const [result] = await pool.execute('SELECT * FROM `list`') as ResListRecord;
+    public static async listAll(name: string): Promise<TaskEntity[]> {
+        const [result] = await pool.execute('SELECT * FROM `list` WHERE `task` LIKE :search', {
+            search: `%${name}%`
+        }) as ResListRecord;
         // return result.map(obj => new TaskRecord(obj));
         return result;
     }
