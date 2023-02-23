@@ -9,7 +9,6 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import {list} from "./routes/list";
 import {register} from "./routes/register";
-import {admin} from "./routes/admin";
 import {login} from "./routes/login";
 
 const limiter = rateLimit({
@@ -41,7 +40,6 @@ app.use(session({
 
 app.use('/list', list);
 app.use('/register', register);
-app.use('/admin', admin);
 app.use('/', login);
 
 

@@ -1,3 +1,3 @@
-import {TaskEntity} from "./task.entity";
-
-export type TaskCreate = Omit<TaskEntity, 'id'>;
+export type TaskCreate = {
+    description: string;
+}

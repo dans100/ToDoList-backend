@@ -1,4 +1,5 @@
 export interface TaskEntity {
     id?: string;
-    task: string;
+    description: string;
+    user_id: string;
 }

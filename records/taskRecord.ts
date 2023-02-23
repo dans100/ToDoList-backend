@@ -9,59 +9,64 @@ type ResListRecord = [TaskEntity[], FieldPacket[]];
 export class TaskRecord implements TaskEntity {
 
     id?: string;
-    task: string;
+    description: string;
+    user_id: string;
 
     constructor(public obj: TaskEntity) {
 
-        if (!obj.task || obj.task.length < 3 || obj.task.length > 55) {
-            throw new ValidationError('Task cannot be more than 3 characters and later than 55 characters');
+        if (!obj.description || obj.description.length < 3 || obj.description.length > 55) {
+            throw new ValidationError('Description cannot be shorter than 3 characters and later than 55 characters');
         }
 
         this.id = obj.id;
-        this.task = obj.task;
+        this.description = obj.description;
+        this.user_id = obj.user_id;
     }
 
-    public async insert(): Promise<string> {
+    public async insert(): Promise<void> {
         if (!this.id) {
             this.id = uuid();
         }
-        await pool.execute('INSERT INTO `list` VALUES(:id, :task)', {
+        await pool.execute('INSERT INTO `tasks` VALUES(:id, :description, :user_id)', {
             id: this.id,
-            task: this.task,
+            description: this.description,
+            user_id: this.user_id,
         })
-        return this.id;
     }
 
     public async delete(): Promise<void> {
-        await pool.execute('DELETE FROM `list` WHERE `id`=:id', {
+        await pool.execute('DELETE FROM `tasks` WHERE `id`=:id', {
             id: this.id,
         });
     }
 
-    public async update():Promise<void> {
-        await pool.execute('UPDATE `list` SET `task`=:task WHERE `id`=:id', {
+    public async update(): Promise<void> {
+        await pool.execute('UPDATE `tasks` SET `description`=:description WHERE `id`=:id', {
             id: this.id,
-            task: this.task,
+            description: this.description,
         })
     }
 
     public static async getOne(id: string): Promise<TaskRecord | null> {
-        const [result] = await pool.execute('SELECT * FROM `list` WHERE `id`=:id', {
+        const [result] = await pool.execute('SELECT * FROM `tasks` WHERE `id`=:id', {
             id,
         }) as ResListRecord;
         return result.length === 0 ? null : new TaskRecord(result[0]);
     }
 
-    public static async listAll(name: string): Promise<TaskEntity[]> {
-        const [result] = await pool.execute('SELECT * FROM `list` WHERE `task` LIKE :search', {
-            search: `%${name}%`
+    public static async listAll(userId: string, name: string): Promise<TaskEntity[]> {
+        const [result] = await pool.execute('SELECT * FROM `tasks` WHERE `user_id`=:user_id AND `description` LIKE :search', {
+            search: `%${name}%`,
+            user_id: userId,
         }) as ResListRecord;
         // return result.map(obj => new TaskRecord(obj));
         return result;
     }
 
-    public static async deleteAll(): Promise<void> {
-        await pool.execute('DELETE FROM `list`');
+    public static async deleteAll(userId: string): Promise<void> {
+        await pool.execute('DELETE FROM `tasks` WHERE `user_id`=:user_id', {
+            user_id: userId,
+        });
     }
 
 }
