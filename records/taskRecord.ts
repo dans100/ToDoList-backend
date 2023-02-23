@@ -14,7 +14,7 @@ export class TaskRecord implements TaskEntity {
     constructor(public obj: TaskEntity) {
 
         if (!obj.task || obj.task.length < 3 || obj.task.length > 55) {
-            throw new ValidationError('Task cannot be more than 3 characters and later than 55 characters');
+            throw new ValidationError('Task cannot be shorter than 3 characters and later than 55 characters');
         }
 
         this.id = obj.id;

@@ -7,7 +7,7 @@ export const register = Router();
 register
     .post('/', async (req, res) => {
         const {username, password, email} = req.body;
-        if (await UserRecord.getOne(username) === null) {
+        if (await UserRecord.getOne(email) === null) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new UserRecord({
                 username,
@@ -15,8 +15,12 @@ register
                 email,
             });
             await newUser.insert();
-            res.json({message: `User ${username} has been registered`});
+            res
+                .status(201)
+                .json({message: `User ${username} has been registered`});
         } else {
-            res.json({message: `User ${username} is already`});
+            res
+                .status(409)
+                .json({message: `User ${username} is already`});
         }
     })
