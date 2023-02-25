@@ -11,6 +11,7 @@ export class TaskRecord implements TaskEntity {
     id?: string;
     description: string;
     user_id: string;
+    isCompleted: number;
 
     constructor(public obj: TaskEntity) {
 
@@ -21,16 +22,18 @@ export class TaskRecord implements TaskEntity {
         this.id = obj.id;
         this.description = obj.description;
         this.user_id = obj.user_id;
+        this.isCompleted = obj.isCompleted;
     }
 
     public async insert(): Promise<void> {
         if (!this.id) {
             this.id = uuid();
         }
-        await pool.execute('INSERT INTO `tasks` VALUES(:id, :description, :user_id)', {
+        await pool.execute('INSERT INTO `tasks` VALUES(:id, :description, :user_id, :isCompleted)', {
             id: this.id,
             description: this.description,
             user_id: this.user_id,
+            isCompleted: 0,
         })
     }
 
@@ -41,9 +44,10 @@ export class TaskRecord implements TaskEntity {
     }
 
     public async update(): Promise<void> {
-        await pool.execute('UPDATE `tasks` SET `description`=:description WHERE `id`=:id', {
+        await pool.execute('UPDATE `tasks` SET `description`=:description, `isCompleted`=:isCompleted WHERE `id`=:id', {
             id: this.id,
             description: this.description,
+            isCompleted: this.isCompleted,
         })
     }
 
@@ -66,6 +70,13 @@ export class TaskRecord implements TaskEntity {
     public static async deleteAll(userId: string): Promise<void> {
         await pool.execute('DELETE FROM `tasks` WHERE `user_id`=:user_id', {
             user_id: userId,
+        });
+    }
+
+    public static async deleteComplete(userId: string): Promise<void> {
+        await pool.execute('DELETE FROM `tasks` WHERE `user_id`=:user_id AND `isCompleted`=:isCompleted', {
+            user_id: userId,
+            isCompleted: 1,
         });
     }
 
