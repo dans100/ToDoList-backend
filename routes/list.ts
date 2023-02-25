@@ -22,7 +22,10 @@ list
         res.json(task);
     })
     .delete('/:id?', verifyToken, async (req: Request, res: Response) => {
-        if (req.params.id) {
+        if (req.params.id === 'complete') {
+            await TaskRecord.deleteComplete(req.user.id);
+            res.end();
+        } else if (req.params.id) {
             const task = await TaskRecord.getOne(req.params.id);
             if (task === null) {
                 return new ValidationError('Task not found');
@@ -37,12 +40,23 @@ list
     .patch('/:id', verifyToken, async (req, res) => {
         const task = await TaskRecord.getOne(req.params.id);
         if (task === null) {
-            return new ValidationError('Task not found')
+            return new ValidationError('Task not found');
         }
         if (req.body.editTaskValue.length < 3 || req.body.editTaskValue.length > 55) {
-            return new ValidationError('Task cannot be more than 3 characters and later than 55 characters');
+            return new ValidationError('Task cannot be shorter than 3 characters and later than 55 characters');
         }
         task.description = req.body.editTaskValue;
         await task.update();
         res.json(task);
+    })
+    .patch('/:id/status', verifyToken, async (req, res) => {
+        const task = await TaskRecord.getOne(req.params.id);
+        if (task === null) {
+            return new ValidationError('Task not found')
+        }
+        task.isCompleted = req.body.isComplete;
+        await task.update();
+        res.json(task);
     });
+
+
