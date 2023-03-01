@@ -12,6 +12,7 @@ export class TaskRecord implements TaskEntity {
     description: string;
     user_id: string;
     isCompleted: number;
+    deadline: Date | null;
 
     constructor(public obj: TaskEntity) {
 
@@ -23,17 +24,19 @@ export class TaskRecord implements TaskEntity {
         this.description = obj.description;
         this.user_id = obj.user_id;
         this.isCompleted = obj.isCompleted;
+        this.deadline = obj.deadline;
     }
 
     public async insert(): Promise<void> {
         if (!this.id) {
             this.id = uuid();
         }
-        await pool.execute('INSERT INTO `tasks` VALUES(:id, :description, :user_id, :isCompleted)', {
+        await pool.execute('INSERT INTO `tasks` VALUES(:id, :description, :user_id, :isCompleted, :deadline)', {
             id: this.id,
             description: this.description,
             user_id: this.user_id,
             isCompleted: 0,
+            deadline: this.deadline
         })
     }
 

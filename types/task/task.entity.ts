@@ -3,4 +3,5 @@ export interface TaskEntity {
     description: string;
     user_id: string;
     isCompleted: number;
+    deadline: Date | null;
 }
