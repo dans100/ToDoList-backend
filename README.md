@@ -29,6 +29,7 @@ Here're some of the project's best features:
 *   calendar with deadlines
 *   login and registration
 *   dark mode
+*   responsive styles
 
 <h2>🛠️ Installation Steps:</h2>
 
