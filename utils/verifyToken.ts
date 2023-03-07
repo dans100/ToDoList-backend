@@ -1,26 +1,30 @@
-import {NextFunction, Request, Response} from "express";
-import jwt, {JwtPayload, VerifyErrors} from "jsonwebtoken";
+import { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 
 declare module 'express' {
-    interface Request {
-        user?: any;
-    }
+  interface Request {
+    user?: any;
+  }
 }
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.access_token;
+export const verifyToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.cookies.access_token;
 
-    if (!token) {
-        return res
-            .status(401)
-            .send({message: 'Unauthorized request'})
+  if (!token) {
+    return res.status(401).send({ message: 'Unauthorized request' });
+  }
+
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN as string,
+    (err: VerifyErrors | null, user: JwtPayload | string | undefined) => {
+      if (err) return next(res.status(401).json({ message: 'Invalid token' }));
+      req.user = user;
+      next();
     }
-
-    jwt.verify(token, process.env.ACCESS_TOKEN as string,
-        (err: VerifyErrors | null, user: JwtPayload | string | undefined) => {
-            if (err) return next(res.status(401).json({message: "Invalid token"}));
-            req.user = user;
-            next();
-        });
-
-}
+  );
+};

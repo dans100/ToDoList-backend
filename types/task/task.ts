@@ -1,3 +1,3 @@
 export type TaskCreate = {
-    description: string;
-}
+  description: string;
+};
