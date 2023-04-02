@@ -11,14 +11,13 @@ login
     res.json({ message: 'User is logged' });
   })
   .post('/login', async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, pwd } = req.body;
     const user = await UserRecord.getOne(email);
-
     if (!user) {
-      next(res.status(400).json({ message: 'User not found' }));
+      next(res.status(404).json({ error: 'User not found' }));
     } else {
-      const hashedPassword = user.password;
-      const isValidPassword = await bcrypt.compare(password, hashedPassword);
+      const hashedPassword = user.pwd;
+      const isValidPassword = await bcrypt.compare(pwd, hashedPassword);
       if (isValidPassword) {
         const { id, username } = user;
         const token = jwt.sign(
@@ -33,7 +32,7 @@ login
           .status(200)
           .json({ id, username, token });
       } else {
-        res.status(400).json({ message: 'Wrong password or username' });
+        res.status(400).json({ error: 'Wrong password or username' });
       }
     }
   })
