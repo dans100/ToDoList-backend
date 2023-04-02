@@ -21,7 +21,7 @@ list
   .delete('/:id?', verifyToken, async (req: Request, res: Response) => {
     if (req.params.id === 'complete') {
       await TaskRecord.deleteComplete(req.user.id);
-      res.end();
+      res.json({ true: 'ok' });
     } else if (req.params.id) {
       const task = await TaskRecord.getOne(req.params.id);
       if (task === null) {
@@ -31,7 +31,7 @@ list
       res.json(task);
     } else {
       await TaskRecord.deleteAll(req.user.id);
-      res.end();
+      res.json({ true: 'ok' });
     }
   })
   .patch('/:id', verifyToken, async (req, res) => {
@@ -56,7 +56,7 @@ list
     if (task === null) {
       return new ValidationError('Task not found');
     }
-    task.isCompleted = req.body.isComplete;
+    task.isCompleted = req.body.isCompleted;
     await task.update();
     res.json(task);
   });
