@@ -9,11 +9,11 @@ type ResUserRecords = [UserRecord[], FieldPacket[]];
 export class UserRecord implements UserEntity {
   id?: string;
   username: string;
-  password: string;
+  pwd: string;
   email: string;
 
   constructor(obj: UserEntity) {
-    if (!obj.username || !obj.password || !obj.email) {
+    if (!obj.username || !obj.pwd || !obj.email) {
       throw new ValidationError(
         'Please enter a valid email, username and password (non-empty values).'
       );
@@ -25,7 +25,7 @@ export class UserRecord implements UserEntity {
       );
     }
 
-    if (obj.password.length > 60 || obj.password.length < 7) {
+    if (obj.pwd.length > 60 || obj.pwd.length < 7) {
       throw new ValidationError(
         'Password cannot be shorter than 7 characters and later than 60 characters'
       );
@@ -36,7 +36,7 @@ export class UserRecord implements UserEntity {
 
     this.id = obj.id;
     this.username = obj.username;
-    this.password = obj.password;
+    this.pwd = obj.pwd;
     this.email = obj.email;
   }
 
@@ -46,11 +46,11 @@ export class UserRecord implements UserEntity {
     }
 
     await pool.execute(
-      'INSERT INTO `users` VALUES(:id, :username, :password, :email)',
+      'INSERT INTO `users` VALUES(:id, :pwd, :password, :email)',
       {
         id: this.id,
         username: this.username,
-        password: this.password,
+        pwd: this.pwd,
         email: this.email,
       }
     );

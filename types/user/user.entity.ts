@@ -1,6 +1,6 @@
 export interface UserEntity {
-    id?: string;
-    username: string;
-    password: string;
-    email: string;
+  id?: string;
+  username: string;
+  pwd: string;
+  email: string;
 }
