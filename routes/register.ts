@@ -5,12 +5,12 @@ import { UserRecord } from '../records/userRecord';
 export const register = Router();
 
 register.post('/', async (req, res) => {
-  const { username, password, email } = req.body;
+  const { username, pwd, email } = req.body;
   if ((await UserRecord.getOne(email)) === null) {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(pwd, 10);
     const newUser = new UserRecord({
       username,
-      password: hashedPassword,
+      pwd: hashedPassword,
       email,
     });
     await newUser.insert();
